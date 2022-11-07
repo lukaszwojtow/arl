@@ -1,0 +1,12 @@
+[package]
+name = "arl"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+authors = ["Łukasz Wojtów <lukasz.wojtow@gmail.com>"]
+description = "A rate limiter to be used with tokio"
+categories = ["concurrency"]
+repository = "https://github.com/lukaszwojtow/arl"
+
+[dependencies]
+tokio = { version = "1.21.2", features = ["full"] }
