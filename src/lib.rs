@@ -19,10 +19,10 @@
     variant_size_differences
 )]
 
-use std::time::{Duration, Instant};
 use tokio::sync::mpsc::{channel, Receiver, Sender};
 use tokio::sync::oneshot;
 use tokio::time::sleep;
+use tokio::time::{Duration, Instant};
 
 /// A rate limiter, or `time barrier` to prevent continuing execution before given time passes.
 /// Used mainly for things like dealing with remote API DOS protection.
@@ -32,7 +32,7 @@ pub struct RateLimiter {
 }
 
 impl RateLimiter {
-    /// Creates a new RateLimiter that prevents a async task from continuing too quickly.
+    /// Creates a new RateLimiter that prevents an async task from continuing too quickly.
     /// # Example:
     /// ```no_run
     /// use std::time::Duration;
@@ -81,18 +81,18 @@ impl RateLimiter {
         tokio::spawn(async move {
             let mut queue = Vec::with_capacity(count);
             while let Some(message) = receiver.recv().await {
-                if queue.len() >= count {
-                    let alarm = queue[0] + duration;
+                while !queue.is_empty() && queue[0] <= Instant::now() {
+                    queue.remove(0);
+                }
+                if queue.len() > count {
+                    let alarm = queue.remove(0);
                     sleep(alarm - Instant::now()).await;
                 }
                 message
                     .sender
                     .send(())
                     .expect("unable to send to arl client channel");
-                queue.push(Instant::now());
-                while !queue.is_empty() && queue[0] <= Instant::now() - duration {
-                    queue.remove(0);
-                }
+                queue.push(Instant::now() + duration);
             }
         });
     }

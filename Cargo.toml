@@ -1,6 +1,6 @@
 [package]
 name = "arl"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 authors = ["Łukasz Wojtów <lukasz.wojtow@gmail.com>"]
@@ -9,4 +9,4 @@ categories = ["concurrency"]
 repository = "https://github.com/lukaszwojtow/arl"
 
 [dependencies]
-tokio = { version = "1.21.2", features = ["full"] }
+tokio = { version = "1", features = ["macros","rt-multi-thread","sync","time"]}
